@@ -1,0 +1,26 @@
+<idea-plugin>
+    <id>com.github.steewsc.mvisetup</id>
+    <name>mvi-setup</name>
+    <vendor>steewsc</vendor>
+
+    <!-- Product and plugin compatibility requirements -->
+    <!-- https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html -->
+    <depends>org.jetbrains.android</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <applicationService serviceImplementation="com.github.steewsc.mvisetup.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.github.steewsc.mvisetup.services.MyProjectService"/>
+    </extensions>
+
+    <applicationListeners>
+        <listener class="com.github.steewsc.mvisetup.listeners.MyProjectManagerListener"
+                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
+    </applicationListeners>
+
+    <extensions defaultExtensionNs="com.android.tools.idea.wizard.template">
+        <wizardTemplateProvider implementation="other.WizardTemplateProviderImpl" />
+    </extensions>
+</idea-plugin>
