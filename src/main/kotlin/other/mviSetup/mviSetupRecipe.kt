@@ -3,6 +3,7 @@ package other.mviSetup
 import com.android.tools.idea.wizard.template.ModuleTemplateData
 import com.android.tools.idea.wizard.template.RecipeExecutor
 import com.android.tools.idea.wizard.template.impl.activities.common.addAllKotlinDependencies
+import com.android.tools.idea.wizard.template.impl.activities.common.generateManifest
 import com.github.steewsc.mvisetup.listeners.MyProjectManagerListener.Companion.projectInstance
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.psi.PsiDirectory
@@ -29,8 +30,14 @@ fun RecipeExecutor.mviSetup(
     val directorySrc = PsiManager.getInstance(project).findDirectory(virtSrc)!!
     val directoryRes = PsiManager.getInstance(project).findDirectory(virtRes)!!
 
+    val activityClass = "${entityName}sActivity"
+    val activityTitle = "$entityName Activity"
+    // This will generate new manifest (with activity) to merge it with existing
+    generateManifest(moduleData, activityClass, activityTitle, packageName,
+            isLauncher = false, hasNoActionBar = true, generateActivityTitle = true)
+
     someActivity(packageName, entityName, layoutName, projectData)
-            .save(directorySrc, packageName, "${entityName}sActivity.kt")
+            .save(directorySrc, packageName, "${activityClass}.kt")
 
     someActivityLayout(packageName, entityName)
             .save(directoryRes, "layout", "${layoutName}.xml")
