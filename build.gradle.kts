@@ -1,23 +1,23 @@
-import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.changelog.closure
 import org.jetbrains.changelog.markdownToHTML
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.apache.tools.ant.taskdefs.condition.Os
 
 plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.4.21"
+    id("org.jetbrains.kotlin.jvm") version "1.4.32"
     // gradle-intellij-plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
-    id("org.jetbrains.intellij") version "0.6.5"
+    id("org.jetbrains.intellij") version "0.7.2"
     // gradle-changelog-plugin - read more: https://github.com/JetBrains/gradle-changelog-plugin
-    id("org.jetbrains.changelog") version "0.6.2"
+    id("org.jetbrains.changelog") version "1.1.2"
     // detekt linter - read more: https://detekt.github.io/detekt/gradle.html
-    id("io.gitlab.arturbosch.detekt") version "1.14.1"
-    // ktlint linter - read more: https://github.com/JLLeitschuh/ktlint-gradle
-    id("org.jlleitschuh.gradle.ktlint") version "9.4.1"
+    id("io.gitlab.arturbosch.detekt") version "1.17.0"
 }
 
+val androidStudioPath: String by project
+val androidStudioPathMacOS: String by project
 // Import variables from gradle.properties file
 val pluginGroup: String by project
 // `pluginName_` variable ends with `_` because of the collision with Kotlin magic getter in the `intellij` closure.
@@ -40,23 +40,31 @@ version = pluginVersion
 repositories {
     mavenCentral()
     jcenter()
+    google()
 }
 dependencies {
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.14.1")
-    compileOnly(files("lib/wizard-template.jar"))
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.17.0")
 }
 
 // Configure gradle-intellij-plugin plugin.
 // Read more: https://github.com/JetBrains/gradle-intellij-plugin
 intellij {
     pluginName = pluginName_
-    version = platformVersion
-    type = platformType
+//    version = platformVersion
+//    type = platformType
+    localPath = if (Os.isFamily(Os.FAMILY_WINDOWS)) androidStudioPath else androidStudioPathMacOS
     downloadSources = platformDownloadSources.toBoolean()
     updateSinceUntilBuild = true
 
     // Plugin Dependencies. Uses `platformPlugins` property from the gradle.properties file.
     setPlugins(*platformPlugins.split(',').map(String::trim).filter(String::isNotEmpty).toTypedArray())
+}
+
+// Configure gradle-changelog-plugin plugin.
+// Read more: https://github.com/JetBrains/gradle-changelog-plugin
+changelog {
+    version = pluginVersion
+    groups = emptyList()
 }
 
 // Configure detekt plugin.
@@ -72,6 +80,7 @@ detekt {
     }
 }
 
+project.gradle.startParameter.excludedTaskNames.add("buildSearchableOptions")
 tasks {
     // Set the compatibility versions to 1.8
     withType<JavaCompile> {
@@ -83,11 +92,6 @@ tasks {
             kotlinOptions.jvmTarget = "1.8"
         }
     }
-
-    withType<Detekt> {
-        jvmTarget = "1.8"
-    }
-
     patchPluginXml {
         version(pluginVersion)
         sinceBuild(pluginSinceBuild)
@@ -114,6 +118,10 @@ tasks {
                 changelog.getLatest().toHTML()
             }
         )
+    }
+
+    runPluginVerifier {
+        ideVersions(pluginVerifierIdeVersions)
     }
 
     publishPlugin {

@@ -2,16 +2,18 @@ package other.mviSetup
 
 import com.android.tools.idea.wizard.template.*
 
+private const val MIN_SDK = 16
+
 val mviSetupTemplate
     get() = template {
         revision = 2
         name = "MY Setup with Activity"
         description = "Creates a new activity along layout file."
-        minApi = 16
-        minBuildApi = 16
-        category = Category.Other // Check other categories
+        minApi = MIN_SDK
+        minBuildApi = MIN_SDK
+        category = Category.Activity
         formFactor = FormFactor.Mobile
-        screens = listOf(WizardUiContext.FragmentGallery, WizardUiContext.MenuEntry,
+        screens = listOf(WizardUiContext.ActivityGallery, WizardUiContext.MenuEntry,
                 WizardUiContext.NewProject, WizardUiContext.NewModule)
 
         val packageNameParam = defaultPackageNameParameter

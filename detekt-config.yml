@@ -5,4 +5,16 @@ formatting:
   Indentation:
     continuationIndentSize: 8
   ParameterListWrapping:
+    active: true
+    autoCorrect: true
     indentSize: 8
+    maxLineLength: 120
+  NoWildcardImports:
+    active: false
+style:
+  WildcardImport:
+    active: false
+complexity:
+  LongMethod:
+    active: true
+    excludes: ['**/app_package/**']
