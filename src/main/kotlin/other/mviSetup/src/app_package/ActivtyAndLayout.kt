@@ -15,7 +15,7 @@ import ${projectData.applicationPackage}.R;
 class ${entityName}sActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.${layoutName.toLowerCase()})
+        setContentView(R.layout.${layoutName.lowercase()})
     }
 }
 """

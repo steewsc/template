@@ -6,11 +6,9 @@ private const val MIN_SDK = 16
 
 val mviSetupTemplate
     get() = template {
-        revision = 2
         name = "MY Setup with Activity"
         description = "Creates a new activity along layout file."
         minApi = MIN_SDK
-        minBuildApi = MIN_SDK
         category = Category.Activity
         formFactor = FormFactor.Mobile
         screens = listOf(WizardUiContext.ActivityGallery, WizardUiContext.MenuEntry,
@@ -29,7 +27,7 @@ val mviSetupTemplate
             default = "my_act"
             help = "The name of the layout to create for the activity"
             constraints = listOf(Constraint.LAYOUT, Constraint.UNIQUE, Constraint.NONEMPTY)
-            suggest = { "${activityToLayout(entityName.value.toLowerCase())}s" }
+            suggest = { "${activityToLayout(entityName.value.lowercase())}s" }
         }
 
         widgets(

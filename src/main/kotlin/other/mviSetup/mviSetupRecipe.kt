@@ -18,9 +18,8 @@ fun RecipeExecutor.mviSetup(
     addAllKotlinDependencies(moduleData)
 
     val activityClass = "${entityName}sActivity"
-    val activityTitle = "$entityName Activity"
     // This will generate new manifest (with activity) to merge it with existing
-    generateManifest(moduleData, activityClass, activityTitle, packageName,
+    generateManifest(moduleData, activityClass, packageName,
             isLauncher = false, hasNoActionBar = true, generateActivityTitle = true)
 
     save(
